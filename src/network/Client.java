@@ -1,19 +1,9 @@
 package network;
-
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 import java.net.Socket;
 
 public class Client {
 
     private Socket s;
-    private DataInputStream din;
-    private DataOutputStream dos;
-    private BufferedReader br;
-    private String my_msg;
-    private String received_msg;
 
     public Client(){
         this("localhost", 3333);
@@ -23,15 +13,16 @@ public class Client {
         try {
             s = new Socket(host, port);
             System.out.println("Successfully joined server!");
-            din = new DataInputStream(s.getInputStream());
-            dos = new DataOutputStream(s.getOutputStream());
-            br = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("Say something: ");
-            my_msg = br.readLine();
-            dos.writeUTF(my_msg);
-            dos.flush();
-            // ending connection
-            din.close();
+
+            Receiver receiver = new Receiver(s);
+            Sender sender = new Sender(s);
+            Thread t_sender = new Thread(sender);
+            Thread t_receiver = new Thread(receiver);
+            t_receiver.start();
+            t_sender.start();
+            t_receiver.join();
+            t_sender.join();
+
             s.close();
         }
         catch (Exception e){

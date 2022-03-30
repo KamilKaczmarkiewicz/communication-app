@@ -1,9 +1,4 @@
 package network;
-
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -11,11 +6,6 @@ public class MyServer {
 
     private ServerSocket ss;
     private Socket s;
-    private DataInputStream din;
-    private DataOutputStream dos;
-    private BufferedReader br;
-    private String my_msg;
-    private String received_msg;
 
     public MyServer(){
         this(3333);
@@ -27,14 +17,16 @@ public class MyServer {
             System.out.println("Server started");
             s = ss.accept();
             System.out.println("Someone joined server");
-            din = new DataInputStream(s.getInputStream());
-            dos = new DataOutputStream(s.getOutputStream());
-            br = new BufferedReader(new InputStreamReader(System.in));
-            System.out.println("Waiting for msg from client");
-            received_msg = din.readUTF();
-            System.out.println("Client says: " + received_msg);
-            // ending connection
-            din.close();
+
+            Receiver receiver = new Receiver(s);
+            Sender sender = new Sender(s);
+            Thread t_sender = new Thread(sender);
+            Thread t_receiver = new Thread(receiver);
+            t_receiver.start();
+            t_sender.start();
+            t_receiver.join();
+            t_sender.join();
+
             s.close();
             ss.close();
         }
