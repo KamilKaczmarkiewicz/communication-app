@@ -1,5 +1,5 @@
-application uses:
-    threads
-    network
-    i/o
-    interface
+#application uses:
+- threads
+- network
+- i/o 
+- interface
