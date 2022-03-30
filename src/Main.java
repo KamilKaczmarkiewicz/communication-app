@@ -1,5 +1,4 @@
 import network.Network;
-
 import java.util.Scanner;
 
 public class Main {
@@ -20,6 +19,5 @@ public class Main {
             }
             System.out.println("Wrong input!!! Try again");
         }
-
     }
 }
