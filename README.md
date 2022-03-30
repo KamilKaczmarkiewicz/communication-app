@@ -1,4 +1,4 @@
-#application uses:
+# application uses:
 - threads
 - network
 - i/o 
